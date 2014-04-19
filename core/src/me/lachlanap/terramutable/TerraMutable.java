@@ -26,9 +26,14 @@ public class TerraMutable extends ApplicationAdapter {
         renderingSystem = new RenderingSystem();
 
         world = new World();
-        //world.setSystem(new MovementSystem());
-        world.setSystem(renderingSystem);
+
+        world.setSystem(new PixelDataUpdateSystem());
+
+        world.setSystem(new MeshRefreshingSystem());
         world.setSystem(new MeshingSystem(new SquareMesher()));
+
+        world.setSystem(renderingSystem);
+
         world.initialize();
 
         terrainGenerator = new TerrainGenerator();
@@ -63,6 +68,10 @@ public class TerraMutable extends ApplicationAdapter {
             renderingSystem.translate(-5 * Gdx.graphics.getDeltaTime(), 0);
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             renderingSystem.translate(5 * Gdx.graphics.getDeltaTime(), 0);
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+
+        }
     }
 
     @Override

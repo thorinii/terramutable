@@ -15,8 +15,6 @@ public class SquareMesher implements Mesher {
 
     @Override
     public Mesh mesh(PixelData data) {
-        System.out.println("Meshing:\n" + data);
-
         MeshBuilder builder = new MeshBuilder();
         VertexInfo i00 = new VertexInfo(),
                 i01 = new VertexInfo(),

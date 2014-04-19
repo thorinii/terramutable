@@ -22,15 +22,6 @@ public class EntityFactory {
         return e;
     }
 
-    public static Entity makeEntityB(World world, float x, float y) {
-        Entity e = world.createEntity();
-
-        e.addComponent(new Position(x, y));
-        e.addComponent(new MeshView(buildBMesh()));
-
-        return e;
-    }
-
     public static Entity makeChunk(World world, PixelData pixelData, int chunkX, int chunkY) {
         Entity e = world.createEntity();
 
@@ -47,15 +38,6 @@ public class EntityFactory {
         builder.triangle(new Vector3(0, 0, 0), Color.RED,
                          new Vector3(2, 0, 0), Color.GREEN,
                          new Vector3(0, 2, 0), Color.BLUE);
-        return builder.end();
-    }
-
-    private static Mesh buildBMesh() {
-        MeshBuilder builder = new MeshBuilder();
-        builder.begin(new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Color()), GL20.GL_TRIANGLES);
-        builder.triangle(new Vector3(0, 2, 0), Color.GREEN,
-                         new Vector3(2, 0, 0), Color.YELLOW,
-                         new Vector3(2, 2, 0), Color.CYAN);
         return builder.end();
     }
 }

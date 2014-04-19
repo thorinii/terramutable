@@ -12,6 +12,7 @@ public class PixelData extends Component {
     public static final int SIZE_IN_PIXELS = 16;
 
     private final BitSet pixels;
+    private boolean dirty;
 
     public PixelData() {
         pixels = new BitSet(SIZE_IN_PIXELS * SIZE_IN_PIXELS);
@@ -27,6 +28,7 @@ public class PixelData extends Component {
 
     public void set(int x, int y, boolean solid) {
         pixels.set(indexOf(x, y), solid);
+        dirty = true;
     }
 
     public boolean get(int x, int y) {
@@ -35,6 +37,14 @@ public class PixelData extends Component {
 
     private int indexOf(int x, int y) {
         return x + y * getWidth();
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void clearDirty() {
+        dirty = false;
     }
 
     @Override

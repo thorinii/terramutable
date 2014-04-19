@@ -30,6 +30,7 @@ public class MeshingSystem extends EntityProcessingSystem {
         PixelData data = pdm.get(e);
 
         Mesh mesh = mesher.mesh(data);
+        data.clearDirty();
 
         e.addComponent(new MeshView(mesh));
         e.changedInWorld();
