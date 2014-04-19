@@ -1,7 +1,6 @@
 package me.lachlanap.terramutable.game.terrain;
 
 import com.badlogic.gdx.graphics.Mesh;
-import me.lachlanap.terramutable.game.PixelData;
 
 /**
  *

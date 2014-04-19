@@ -1,7 +1,5 @@
 package me.lachlanap.terramutable.game.terrain;
 
-import me.lachlanap.terramutable.game.PixelData;
-
 /**
  *
  * @author Lachlan Phillips

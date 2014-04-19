@@ -1,5 +1,6 @@
 package me.lachlanap.terramutable.game;
 
+import me.lachlanap.terramutable.game.terrain.PixelData;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -13,15 +14,15 @@ import com.artemis.systems.EntityProcessingSystem;
 public class MeshRefreshingSystem extends EntityProcessingSystem {
 
     @Mapper
-    ComponentMapper<PixelData> pdm;
+    ComponentMapper<ChunkData> cdm;
 
     public MeshRefreshingSystem() {
-        super(Aspect.getAspectForAll(PixelData.class, MeshView.class));
+        super(Aspect.getAspectForAll(ChunkData.class, MeshView.class));
     }
 
     @Override
     protected void process(Entity e) {
-        PixelData data = pdm.get(e);
+        PixelData data = cdm.get(e).pixelData;
 
         if (data.isDirty()) {
             e.removeComponent(MeshView.class);

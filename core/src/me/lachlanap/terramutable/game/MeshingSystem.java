@@ -1,5 +1,6 @@
 package me.lachlanap.terramutable.game;
 
+import me.lachlanap.terramutable.game.terrain.PixelData;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -19,12 +20,12 @@ public class MeshingSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<Chunk> cm;
     @Mapper
-    ComponentMapper<PixelData> pdm;
+    ComponentMapper<ChunkData> cdm;
     @Mapper
     ComponentMapper<Position> pm;
 
     public MeshingSystem(Mesher mesher) {
-        super(Aspect.getAspectForAll(Chunk.class, PixelData.class).exclude(MeshView.class));
+        super(Aspect.getAspectForAll(Chunk.class, ChunkData.class).exclude(MeshView.class));
 
         this.mesher = mesher;
     }
@@ -32,7 +33,7 @@ public class MeshingSystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
         Chunk chunk = cm.get(e);
-        PixelData data = pdm.get(e);
+        PixelData data = cdm.get(e).pixelData;
         Position position = pm.getSafe(e);
 
         Mesh mesh = mesher.mesh(data);

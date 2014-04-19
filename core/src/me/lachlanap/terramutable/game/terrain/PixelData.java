@@ -1,13 +1,12 @@
-package me.lachlanap.terramutable.game;
+package me.lachlanap.terramutable.game.terrain;
 
-import com.artemis.Component;
 import java.util.BitSet;
 
 /**
  *
  * @author Lachlan Phillips
  */
-public class PixelData extends Component {
+public class PixelData {
 
     public static final int SIZE_IN_PIXELS = 16;
 

@@ -1,5 +1,6 @@
 package me.lachlanap.terramutable.game;
 
+import me.lachlanap.terramutable.game.terrain.PixelData;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
@@ -19,7 +20,7 @@ public class ChunkGeneratorSystem extends EntityProcessingSystem {
     ComponentMapper<Chunk> cm;
 
     public ChunkGeneratorSystem(Generator generator) {
-        super(Aspect.getAspectForAll(Chunk.class).exclude(PixelData.class));
+        super(Aspect.getAspectForAll(Chunk.class).exclude(ChunkData.class));
 
         this.generator = generator;
     }
@@ -30,7 +31,7 @@ public class ChunkGeneratorSystem extends EntityProcessingSystem {
 
         PixelData data = generator.generate(chunk.cx, chunk.cy);
 
-        e.addComponent(data);
+        e.addComponent(new ChunkData(data));
         e.changedInWorld();
     }
 }

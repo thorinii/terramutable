@@ -3,7 +3,6 @@ package me.lachlanap.terramutable.game.terrain;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
-import me.lachlanap.terramutable.game.PixelData;
 
 /**
  *
