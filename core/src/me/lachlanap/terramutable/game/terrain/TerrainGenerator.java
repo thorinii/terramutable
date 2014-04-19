@@ -6,8 +6,9 @@ import me.lachlanap.terramutable.game.PixelData;
  *
  * @author Lachlan Phillips
  */
-public class TerrainGenerator {
+public class TerrainGenerator implements Generator {
 
+    @Override
     public PixelData generate(int x, int y) {
         PixelData data = new PixelData();
 

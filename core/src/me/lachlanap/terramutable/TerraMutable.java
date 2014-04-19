@@ -17,8 +17,6 @@ public class TerraMutable extends ApplicationAdapter {
 
     private RenderingSystem renderingSystem;
 
-    private TerrainGenerator terrainGenerator;
-
     @Override
     public void create() {
         assetManager = new AssetManager();
@@ -28,6 +26,7 @@ public class TerraMutable extends ApplicationAdapter {
         world = new World();
 
         world.setSystem(new PixelDataUpdateSystem());
+        world.setSystem(new ChunkGeneratorSystem(new TerrainGenerator()));
 
         world.setSystem(new MeshRefreshingSystem());
         world.setSystem(new MeshingSystem(new SquareMesher()));
@@ -36,12 +35,11 @@ public class TerraMutable extends ApplicationAdapter {
 
         world.initialize();
 
-        terrainGenerator = new TerrainGenerator();
-
         EntityFactory.makeEntityA(world, 0, 0).addToWorld();
 
-        PixelData pixelData = terrainGenerator.generate(0, 0);
-        EntityFactory.makeChunk(world, pixelData, 0, 0).addToWorld();
+        EntityFactory.makeChunk(world, 0, 0).addToWorld();
+        EntityFactory.makeChunk(world, 0, 1).addToWorld();
+        EntityFactory.makeChunk(world, 0, 2).addToWorld();
     }
 
     @Override

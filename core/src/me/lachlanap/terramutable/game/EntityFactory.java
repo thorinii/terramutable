@@ -5,7 +5,6 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
-import me.lachlanap.terramutable.game.terrain.Mesher;
 
 /**
  *
@@ -22,12 +21,10 @@ public class EntityFactory {
         return e;
     }
 
-    public static Entity makeChunk(World world, PixelData pixelData, int chunkX, int chunkY) {
+    public static Entity makeChunk(World world, int chunkX, int chunkY) {
         Entity e = world.createEntity();
 
-        e.addComponent(new Position(chunkX * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES,
-                                    chunkY * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES));
-        e.addComponent(pixelData);
+        e.addComponent(new Chunk(chunkX, chunkY));
 
         return e;
     }
