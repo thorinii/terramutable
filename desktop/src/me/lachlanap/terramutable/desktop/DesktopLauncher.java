@@ -8,7 +8,8 @@ public class DesktopLauncher {
 
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.resizable = false;
+        config.resizable = true;
+        config.title = "Terra Mutable";
         new LwjglApplication(new TerraMutable(), config);
     }
 }
