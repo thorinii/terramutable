@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 
@@ -51,6 +52,14 @@ public class RenderingSystem extends EntityProcessingSystem {
 
     public void translate(float dx, float dy) {
         camera.translate(dx, dy);
+    }
+
+    public Rectangle getViewportRectangle() {
+        Rectangle view = new Rectangle(0, 0,
+                                       viewport.getViewportWidth(), viewport.getViewportHeight());
+        view.x = camera.position.x * SCREEN_PIXELS_PER_METRE - view.width / 2;
+        view.y = camera.position.y * SCREEN_PIXELS_PER_METRE - view.height / 2;
+        return view;
     }
 
     @Override
