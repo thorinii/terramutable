@@ -11,10 +11,14 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 public class SquareMesher implements Mesher {
 
     private final Color colour = Color.RED;
+    private final MeshBuilder builder;
+
+    public SquareMesher() {
+        this.builder = new MeshBuilder();
+    }
 
     @Override
     public Mesh mesh(PixelData data) {
-        MeshBuilder builder = new MeshBuilder();
         VertexInfo i00 = new VertexInfo(),
                 i01 = new VertexInfo(),
                 i10 = new VertexInfo(),
@@ -27,6 +31,7 @@ public class SquareMesher implements Mesher {
 
 
         builder.begin(new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Color()), GL20.GL_TRIANGLES);
+        builder.ensureVertices(4 * PixelData.SIZE_IN_PIXELS * PixelData.SIZE_IN_PIXELS);
 
         for (int x = 0; x < data.getWidth(); x++) {
             for (int y = 0; y < data.getHeight(); y++) {

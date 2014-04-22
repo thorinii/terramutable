@@ -27,7 +27,7 @@ public class TerraMutable extends ApplicationAdapter {
 
         world.setSystem(new ChunkPagingSystem(renderingSystem));
 
-        //world.setSystem(new PixelDataUpdateSystem());
+        world.setSystem(new PixelDataUpdateSystem());
         world.setSystem(new ChunkGeneratorSystem(new TerrainGenerator()));
 
         world.setSystem(new MeshRefreshingSystem());
@@ -38,8 +38,6 @@ public class TerraMutable extends ApplicationAdapter {
         world.initialize();
 
         EntityFactory.makeEntityA(world, 0, 0).addToWorld();
-
-        //EntityFactory.makeChunk(world, 0, 0).addToWorld();
     }
 
     @Override
