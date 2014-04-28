@@ -24,9 +24,10 @@ public class MeshRefreshingSystem extends EntityProcessingSystem {
     protected void process(Entity e) {
         PixelData data = cdm.get(e).pixelData;
 
-        if (data.isDirty()) {
-            e.removeComponent(MeshView.class);
-            e.changedInWorld();
-        }
+        //if (data.isDirty()) {
+        e.removeComponent(ChunkData.class);
+        e.removeComponent(MeshView.class);
+        e.changedInWorld();
+        //}
     }
 }

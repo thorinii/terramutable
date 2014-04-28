@@ -14,7 +14,7 @@ import me.lachlanap.terramutable.game.terrain.Mesher;
  * @author Lachlan Phillips
  */
 public class MeshingSystem extends EntityProcessingSystem {
-
+    // TODO: make multithreaded
     private final Mesher mesher;
 
     @Mapper
