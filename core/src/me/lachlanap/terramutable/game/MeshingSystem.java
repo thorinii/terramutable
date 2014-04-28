@@ -1,21 +1,38 @@
 package me.lachlanap.terramutable.game;
 
-import me.lachlanap.terramutable.game.terrain.PixelData;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import me.lachlanap.terramutable.game.terrain.Mesher;
+import me.lachlanap.terramutable.game.terrain.PixelData;
 
 /**
  *
  * @author Lachlan Phillips
  */
 public class MeshingSystem extends EntityProcessingSystem {
-    // TODO: make multithreaded
+
     private final Mesher mesher;
+
+    private final BlockingQueue<MeshingUnit> toProcess;
+    private final ConcurrentMap<Chunk, MeshBuilder> finishedChunks;
+
+    private final int numberOfExecutors;
+    private final ThreadGroup executorGroup;
 
     @Mapper
     ComponentMapper<Chunk> cm;
@@ -28,26 +45,107 @@ public class MeshingSystem extends EntityProcessingSystem {
         super(Aspect.getAspectForAll(Chunk.class, ChunkData.class).exclude(MeshView.class));
 
         this.mesher = mesher;
+
+        this.toProcess = new LinkedBlockingQueue<>();
+        this.finishedChunks = new ConcurrentHashMap<>();
+
+        this.numberOfExecutors = Runtime.getRuntime().availableProcessors();
+        this.executorGroup = new ThreadGroup("Mesher Executors");
+        this.executorGroup.setDaemon(true);
+    }
+
+    @Override
+    protected void initialize() {
+        for (int i = 0; i < numberOfExecutors; i++) {
+            Thread thread = new Thread(executorGroup, new AsynchronousMesher(mesher, toProcess, finishedChunks));
+            thread.start();
+        }
+    }
+
+    @Override
+    protected void dispose() {
+        executorGroup.interrupt();
+    }
+
+    @Override
+    protected void inserted(Entity e) {
+        Chunk chunk = cm.get(e);
+        PixelData data = cdm.get(e).pixelData;
+
+        toProcess.add(new MeshingUnit(chunk, data));
     }
 
     @Override
     protected void process(Entity e) {
         Chunk chunk = cm.get(e);
-        PixelData data = cdm.get(e).pixelData;
-        Position position = pm.getSafe(e);
 
-        Mesh mesh = mesher.mesh(data);
-        data.clearDirty();
+        MeshBuilder meshBuilder = finishedChunks.get(chunk);
+        if (meshBuilder != null) {
+            finishedChunks.remove(chunk);
 
-        if (position == null) {
-            position = new Position();
-            e.addComponent(position);
+            Mesh mesh = meshBuilder.end();
+
+            PixelData data = cdm.get(e).pixelData;
+            data.clearDirty();
+
+            Position position = pm.getSafe(e);
+
+            if (position == null) {
+                position = new Position();
+                e.addComponent(position);
+            }
+
+            position.x = chunk.cx * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES;
+            position.y = chunk.cy * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES;
+
+            e.addComponent(new MeshView(mesh));
+            e.changedInWorld();
+        }
+    }
+
+    @Override
+    protected void end() {
+        System.out.println("Chunk mesh queue length: " + toProcess.size());
+    }
+
+    private static class MeshingUnit {
+
+        final Chunk chunk;
+        final PixelData data;
+
+        private MeshingUnit(Chunk chunk, PixelData data) {
+            this.chunk = chunk;
+            this.data = data;
+        }
+    }
+
+    private static class AsynchronousMesher implements Runnable {
+
+        final Mesher mesher;
+        final BlockingQueue<MeshingUnit> toProcess;
+        final ConcurrentMap<Chunk, MeshBuilder> finishedChunks;
+
+        public AsynchronousMesher(Mesher mesher, BlockingQueue<MeshingUnit> toProcess, ConcurrentMap<Chunk, MeshBuilder> finishedChunks) {
+            this.mesher = mesher;
+            this.toProcess = toProcess;
+            this.finishedChunks = finishedChunks;
         }
 
-        position.x = chunk.cx * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES;
-        position.y = chunk.cy * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES;
+        @Override
+        public void run() {
+            System.out.println("Executor starting up");
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    MeshingUnit unit = toProcess.take();
+                    MeshBuilder mesh = process(unit.data);
+                    finishedChunks.put(unit.chunk, mesh);
+                }
+            } catch (InterruptedException ie) {
+            }
+        }
 
-        e.addComponent(new MeshView(mesh));
-        e.changedInWorld();
+        private MeshBuilder process(PixelData data) {
+            return mesher.mesh(data);
+        }
     }
 }
