@@ -1,11 +1,11 @@
 package me.lachlanap.terramutable.game;
 
-import me.lachlanap.terramutable.game.terrain.PixelData;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.IntervalEntityProcessingSystem;
+import me.lachlanap.terramutable.game.terrain.PixelData;
 
 /**
  *

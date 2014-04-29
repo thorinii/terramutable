@@ -1,6 +1,9 @@
 package me.lachlanap.terramutable.game.terrain;
 
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 
@@ -10,7 +13,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
  */
 public class SquareMesher implements Mesher {
 
-    private final Color colour = Color.RED;
+    private final Color colour = new Color(0.6f, 0.8f, 0.3f, 1f);
     //private final MeshBuilder builder;
 
     public SquareMesher() {
@@ -40,13 +43,13 @@ public class SquareMesher implements Mesher {
                 }
 
                 i00.setPos((x) * Mesher.PIXEL_SIZE_IN_METRES,
-                        (y) * Mesher.PIXEL_SIZE_IN_METRES, 0);
+                           (y) * Mesher.PIXEL_SIZE_IN_METRES, 0);
                 i10.setPos((x + 1) * Mesher.PIXEL_SIZE_IN_METRES,
-                        (y) * Mesher.PIXEL_SIZE_IN_METRES, 0);
+                           (y) * Mesher.PIXEL_SIZE_IN_METRES, 0);
                 i11.setPos((x + 1) * Mesher.PIXEL_SIZE_IN_METRES,
-                        (y + 1) * Mesher.PIXEL_SIZE_IN_METRES, 0);
+                           (y + 1) * Mesher.PIXEL_SIZE_IN_METRES, 0);
                 i01.setPos((x) * Mesher.PIXEL_SIZE_IN_METRES,
-                        (y + 1) * Mesher.PIXEL_SIZE_IN_METRES, 0);
+                           (y + 1) * Mesher.PIXEL_SIZE_IN_METRES, 0);
 
                 builder.rect(i00, i10, i11, i01);
             }

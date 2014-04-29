@@ -15,5 +15,4 @@ public class MeshView extends Component {
         this.mesh = mesh;
     }
 
-
 }

@@ -4,19 +4,13 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
-import java.util.HashMap;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import me.lachlanap.terramutable.game.stat.StatsCollector;
 import me.lachlanap.terramutable.game.terrain.Mesher;
 import me.lachlanap.terramutable.game.terrain.PixelData;
 
@@ -24,7 +18,7 @@ import me.lachlanap.terramutable.game.terrain.PixelData;
  *
  * @author Lachlan Phillips
  */
-public class MeshingSystem extends EntityProcessingSystem {
+public class MeshingSystem extends AbstractTimedSystem {
 
     private final Mesher mesher;
 
@@ -41,8 +35,8 @@ public class MeshingSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<Position> pm;
 
-    public MeshingSystem(Mesher mesher) {
-        super(Aspect.getAspectForAll(Chunk.class, ChunkData.class).exclude(MeshView.class));
+    public MeshingSystem(StatsCollector collector, Mesher mesher) {
+        super(collector, Aspect.getAspectForAll(Chunk.class, ChunkData.class).exclude(MeshView.class));
 
         this.mesher = mesher;
 
@@ -103,11 +97,6 @@ public class MeshingSystem extends EntityProcessingSystem {
         }
     }
 
-    @Override
-    protected void end() {
-        System.out.println("Chunk mesh queue length: " + toProcess.size());
-    }
-
     private static class MeshingUnit {
 
         final Chunk chunk;
@@ -133,7 +122,6 @@ public class MeshingSystem extends EntityProcessingSystem {
 
         @Override
         public void run() {
-            System.out.println("Executor starting up");
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     MeshingUnit unit = toProcess.take();

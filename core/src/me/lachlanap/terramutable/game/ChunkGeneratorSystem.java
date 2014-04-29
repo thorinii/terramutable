@@ -1,26 +1,26 @@
 package me.lachlanap.terramutable.game;
 
-import me.lachlanap.terramutable.game.terrain.PixelData;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
+import me.lachlanap.terramutable.game.stat.StatsCollector;
 import me.lachlanap.terramutable.game.terrain.Generator;
+import me.lachlanap.terramutable.game.terrain.PixelData;
 
 /**
  *
  * @author Lachlan Phillips
  */
-public class ChunkGeneratorSystem extends EntityProcessingSystem {
+public class ChunkGeneratorSystem extends AbstractTimedSystem {
 
     private final Generator generator;
 
     @Mapper
     ComponentMapper<Chunk> cm;
 
-    public ChunkGeneratorSystem(Generator generator) {
-        super(Aspect.getAspectForAll(Chunk.class).exclude(ChunkData.class));
+    public ChunkGeneratorSystem(StatsCollector collector, Generator generator) {
+        super(collector, Aspect.getAspectForAll(Chunk.class).exclude(ChunkData.class));
 
         this.generator = generator;
     }

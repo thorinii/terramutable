@@ -63,9 +63,9 @@ public class TerrainGenerator implements Generator {
 
     private float caves(int x, int y) {
         float caves = Math.min(1, Math.max(0,
-                smoothedNoise2d(x, y) * CAVES_DENSITY));
+                                           smoothedNoise2d(x, y) * CAVES_DENSITY));
         float gradient = Math.min(1,
-                (1 / (CAVES_SCALE * CAVES_SCALE)) * (float) Math.pow(Math.min(0, y - CAVES_SHIFT), 2));
+                                  (1 / (CAVES_SCALE * CAVES_SCALE)) * (float) Math.pow(Math.min(0, y - CAVES_SHIFT), 2));
         return caves * gradient;
     }
 
@@ -90,10 +90,10 @@ public class TerrainGenerator implements Generator {
 
     private float multiNoise2d(int i, int i2) {
         return noise2d(i, i2) / 2f
-                + noise2d(i / 3, i2 / 3)
-                + noise2d(i / 6, i2 / 3) * 2
-                + noise2d(i / 12, i2 / 3) * 4
-                + noise2d(i / 24, i2 / 3) * 8;
+               + noise2d(i / 3, i2 / 3)
+               + noise2d(i / 6, i2 / 3) * 2
+               + noise2d(i / 12, i2 / 3) * 4
+               + noise2d(i / 24, i2 / 3) * 8;
     }
 
     private float noise2d(int i, int j) {

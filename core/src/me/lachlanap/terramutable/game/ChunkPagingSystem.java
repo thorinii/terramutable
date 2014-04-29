@@ -4,17 +4,17 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.HashSet;
 import java.util.Set;
+import me.lachlanap.terramutable.game.stat.StatsCollector;
 import me.lachlanap.terramutable.game.terrain.Mesher;
 
 /**
  *
  * @author Lachlan Phillips
  */
-public class ChunkPagingSystem extends EntityProcessingSystem {
+public class ChunkPagingSystem extends AbstractTimedSystem {
 
     private static final int PADDING = 2;
     private static final float CHUNK_SIZE_IN_SCREEN_PIXELS = Mesher.CHUNK_SIZE_IN_METRES * RenderingSystem.SCREEN_PIXELS_PER_METRE;
@@ -31,8 +31,8 @@ public class ChunkPagingSystem extends EntityProcessingSystem {
     private int chunksInX;
     private int chunksInY;
 
-    public ChunkPagingSystem(RenderingSystem renderingSystem) {
-        super(Aspect.getAspectForAll(Chunk.class));
+    public ChunkPagingSystem(StatsCollector collector, RenderingSystem renderingSystem) {
+        super(collector, Aspect.getAspectForAll(Chunk.class));
 
         this.renderingSystem = renderingSystem;
 
@@ -41,6 +41,8 @@ public class ChunkPagingSystem extends EntityProcessingSystem {
 
     @Override
     protected void begin() {
+        super.begin();
+
         Rectangle viewport = renderingSystem.getViewportRectangle();
 
         baseChunkX = (int) Math.floor(viewport.x / CHUNK_SIZE_IN_SCREEN_PIXELS);
@@ -48,7 +50,6 @@ public class ChunkPagingSystem extends EntityProcessingSystem {
         chunksInX = (int) (viewport.width / CHUNK_SIZE_IN_SCREEN_PIXELS) + 1;
         chunksInY = (int) (viewport.height / CHUNK_SIZE_IN_SCREEN_PIXELS) + 1;
     }
-
 
     @Override
     protected void process(Entity e) {
@@ -65,6 +66,8 @@ public class ChunkPagingSystem extends EntityProcessingSystem {
 
     @Override
     protected void end() {
+        super.end();
+
         for (int x = -PADDING; x < chunksInX + PADDING; x++) {
             for (int y = -PADDING; y < chunksInY + PADDING; y++) {
                 ChunkId id = new ChunkId(baseChunkX + x, baseChunkY + y);

@@ -4,19 +4,19 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
+import me.lachlanap.terramutable.game.stat.StatsCollector;
 
 /**
  *
  * @author Lachlan Phillips
  */
-public class MovementSystem extends EntityProcessingSystem {
+public class MovementSystem extends AbstractTimedSystem {
 
     @Mapper
     ComponentMapper<Position> pm;
 
-    public MovementSystem() {
-        super(Aspect.getAspectForAll(Position.class));
+    public MovementSystem(StatsCollector collector) {
+        super(collector, Aspect.getAspectForAll(Position.class));
     }
 
     @Override
