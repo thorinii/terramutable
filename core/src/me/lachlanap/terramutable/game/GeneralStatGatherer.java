@@ -6,6 +6,7 @@
 package me.lachlanap.terramutable.game;
 
 import com.artemis.World;
+import me.lachlanap.terramutable.game.bus.MessageBus;
 import me.lachlanap.terramutable.game.stat.StatBuffer;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
 
@@ -17,23 +18,31 @@ public class GeneralStatGatherer {
 
     private static final float BYTES_TO_MB = 1024f * 1024f;
 
+    private final MessageBus messageBus;
+
     private final StatBuffer fpsStat;
     private final StatBuffer memoryHeapStat, memoryUsedStat;
     private final StatBuffer entityCount;
+    private final StatBuffer busFlowRate;
 
-    public GeneralStatGatherer(StatsCollector collector) {
+    public GeneralStatGatherer(StatsCollector collector, MessageBus messageBus) {
+        this.messageBus = messageBus;
+
         fpsStat = collector.create("fps");
 
         memoryHeapStat = collector.create("memory.heap");
         memoryUsedStat = collector.create("memory.used");
 
         entityCount = collector.create("entity.count");
+
+        busFlowRate = collector.create("bus.flow");
     }
 
     public void update(World world, float dt) {
         doFps(dt);
         doMemory();
         doEntities(world);
+        doMessageBus();
     }
 
     private void doFps(float dt) {
@@ -52,5 +61,11 @@ public class GeneralStatGatherer {
 
     private void doEntities(World world) {
         entityCount.push(world.getEntityManager().getActiveEntityCount());
+    }
+
+    private void doMessageBus() {
+        int rate = messageBus.getCountSinceLastFrame();
+        messageBus.resetCountSinceLastFrame();
+        busFlowRate.push(rate);
     }
 }

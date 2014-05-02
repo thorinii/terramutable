@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
     }
     dependencies {
     }
@@ -50,6 +50,9 @@ project(":core") {
         compile "net.onedaybeard.artemis:artemis-odb:0.5.0"
 
         compile "me.lachlanap.lct:lct:1.1"
+
+        testCompile "junit:junit:4.11"
+        testCompile "org.jmock:jmock-junit4:2.5.1"
     }
 }
 

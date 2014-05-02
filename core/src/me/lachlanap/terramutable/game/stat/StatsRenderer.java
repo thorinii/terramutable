@@ -14,6 +14,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import me.lachlanap.terramutable.game.TextRenderer;
+import me.lachlanap.terramutable.game.bus.Message;
+import me.lachlanap.terramutable.game.bus.MessageBus;
+import me.lachlanap.terramutable.game.bus.MessageBusListener;
+import me.lachlanap.terramutable.game.messages.DebugCycleStatsMessage;
 
 /**
  *
@@ -58,7 +62,8 @@ public class StatsRenderer {
                     colour = new Color(value, p, q, 1f);
                     break;
                 default:
-                    throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
+                    throw new RuntimeException(
+                            "Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
             }
             colours[i] = colour;
         }
@@ -92,13 +97,29 @@ public class StatsRenderer {
             renderers.get(current).render(batch, shapeRenderer, width, height);
     }
 
-    public void cycleLeft() {
+    public void attachToBus(MessageBus messageBus) {
+        messageBus.watchFor(new MessageBusListener() {
+            @Override
+            public void receive(Message message) {
+                switch (((DebugCycleStatsMessage) message).direction) {
+                    case Left:
+                        cycleLeft();
+                        break;
+                    case Right:
+                        cycleRight();
+                        break;
+                }
+            }
+        }, DebugCycleStatsMessage.class);
+    }
+
+    private void cycleLeft() {
         current--;
         if (current < -1)
             current = renderers.size() - 1;
     }
 
-    public void cycleRight() {
+    private void cycleRight() {
         current++;
         if (current >= renderers.size())
             current = -1;
@@ -108,26 +129,31 @@ public class StatsRenderer {
         List<PlotRenderer> plotRenderers = new ArrayList<>();
         for (int i = 0; i < stats.length; i++) {
             String stat = stats[i];
-            PlotRenderer renderer = new PlotRenderer(collector.get(stat), colours[i], min, max);
+            PlotRenderer renderer = new PlotRenderer(collector.get(stat),
+                                                     colours[i], min, max);
             if (stats.length > 1)
                 renderer.setRenderMinMax(false);
             plotRenderers.add(renderer);
         }
 
-        renderers.add(new AggregatePlotRenderer(textRenderer, plotName, plotRenderers));
+        renderers.add(new AggregatePlotRenderer(textRenderer, plotName,
+                                                plotRenderers));
     }
 
-    public void makeParentPlot(String plotName, float min, float max, String parentName) {
+    public void makeParentPlot(String plotName, float min, float max,
+                               String parentName) {
         List<StatBuffer> buffers = collector.getSub(parentName);
         List<PlotRenderer> plotRenderers = new ArrayList<>();
         for (int i = 0; i < buffers.size(); i++) {
             StatBuffer buffer = buffers.get(i);
-            PlotRenderer renderer = new PlotRenderer(buffer, colours[i], min, max);
+            PlotRenderer renderer = new PlotRenderer(buffer, colours[i], min,
+                                                     max);
             renderer.setRenderMinMax(false);
             plotRenderers.add(renderer);
         }
 
-        renderers.add(new AggregatePlotRenderer(textRenderer, plotName, plotRenderers));
+        renderers.add(new AggregatePlotRenderer(textRenderer, plotName,
+                                                plotRenderers));
     }
 
     public void makeParentPlot(String plotName, String parentName) {
@@ -140,7 +166,8 @@ public class StatsRenderer {
             plotRenderers.add(renderer);
         }
 
-        renderers.add(new AggregatePlotRenderer(textRenderer, plotName, plotRenderers));
+        renderers.add(new AggregatePlotRenderer(textRenderer, plotName,
+                                                plotRenderers));
     }
 
     private static class AggregatePlotRenderer {
@@ -150,7 +177,8 @@ public class StatsRenderer {
         final List<PlotRenderer> renderers;
         final NumberFormat formatter;
 
-        public AggregatePlotRenderer(TextRenderer textRenderer, String plotName, List<PlotRenderer> renderers) {
+        public AggregatePlotRenderer(TextRenderer textRenderer, String plotName,
+                                     List<PlotRenderer> renderers) {
             this.textRenderer = textRenderer;
             this.plotName = plotName;
             this.renderers = renderers;
@@ -160,7 +188,8 @@ public class StatsRenderer {
             formatter.setRoundingMode(RoundingMode.CEILING);
         }
 
-        public void render(SpriteBatch batch, ShapeRenderer shapeRenderer, int width, int height) {
+        public void render(SpriteBatch batch, ShapeRenderer shapeRenderer,
+                           int width, int height) {
             batch.begin();
             textRenderer.render(batch, plotName, 5, height - 5);
             batch.end();
@@ -171,7 +200,8 @@ public class StatsRenderer {
                 total += renderer.getCurrent();
 
                 batch.begin();
-                textRenderer.render(batch, renderer.getName() + ": " + formatter.format(renderer.getCurrent()),
+                textRenderer.render(batch, renderer.getName() + ": " + formatter
+                                    .format(renderer.getCurrent()),
                                     5, height - 20 - 15 * i, colours[i]);
                 batch.end();
 

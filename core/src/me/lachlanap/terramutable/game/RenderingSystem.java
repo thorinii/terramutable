@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import me.lachlanap.terramutable.game.bus.Message;
+import me.lachlanap.terramutable.game.bus.MessageBus;
+import me.lachlanap.terramutable.game.bus.MessageBusListener;
+import me.lachlanap.terramutable.game.messages.MoveCameraMessage;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
 
 /**
@@ -52,6 +56,29 @@ public class RenderingSystem extends AbstractTimedSystem {
 
     public void translate(float dx, float dy) {
         camera.translate(dx, dy);
+    }
+
+    public void attachToBus(MessageBus bus) {
+        bus.watchFor(new MessageBusListener() {
+
+            @Override
+            public void receive(Message message) {
+                switch (((MoveCameraMessage) message).direction) {
+                    case UP:
+                        translate(0, 5 * Gdx.graphics.getDeltaTime());
+                        break;
+                    case DOWN:
+                        translate(0, -5 * Gdx.graphics.getDeltaTime());
+                        break;
+                    case LEFT:
+                        translate(-5 * Gdx.graphics.getDeltaTime(), 0);
+                        break;
+                    case RIGHT:
+                        translate(5 * Gdx.graphics.getDeltaTime(), 0);
+                        break;
+                }
+            }
+        }, MoveCameraMessage.class);
     }
 
     public Rectangle getViewportRectangle() {

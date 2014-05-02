@@ -25,7 +25,6 @@ public class MeshRefreshingSystem extends AbstractTimedSystem {
         PixelData data = cdm.get(e).pixelData;
 
         if (data.isDirty()) {
-            //e.removeComponent(ChunkData.class);
             e.removeComponent(MeshView.class);
             e.changedInWorld();
         }
