@@ -6,5 +6,5 @@ package me.lachlanap.terramutable.game.terrain;
  */
 public interface Generator {
 
-    public PixelData generate(int x, int y);
+    public SquelData generate(int x, int y);
 }

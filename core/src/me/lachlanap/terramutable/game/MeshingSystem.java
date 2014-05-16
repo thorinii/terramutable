@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
 import me.lachlanap.terramutable.game.terrain.Mesher;
-import me.lachlanap.terramutable.game.terrain.PixelData;
+import me.lachlanap.terramutable.game.terrain.SquelData;
 
 /**
  *
@@ -64,7 +64,7 @@ public class MeshingSystem extends AbstractTimedSystem {
     @Override
     protected void inserted(Entity e) {
         Chunk chunk = cm.get(e);
-        PixelData data = cdm.get(e).pixelData;
+        SquelData data = cdm.get(e).pixelData;
 
         toProcess.add(new MeshingUnit(chunk, data));
     }
@@ -79,7 +79,7 @@ public class MeshingSystem extends AbstractTimedSystem {
 
             Mesh mesh = meshBuilder.end();
 
-            PixelData data = cdm.get(e).pixelData;
+            SquelData data = cdm.get(e).pixelData;
             data.clearDirty();
 
             Position position = pm.getSafe(e);
@@ -89,8 +89,8 @@ public class MeshingSystem extends AbstractTimedSystem {
                 e.addComponent(position);
             }
 
-            position.x = chunk.cx * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES;
-            position.y = chunk.cy * PixelData.SIZE_IN_PIXELS * Mesher.PIXEL_SIZE_IN_METRES;
+            position.x = chunk.cx * SquelData.SIZE_IN_SQUELS * Mesher.SQUEL_SIZE_IN_METRES;
+            position.y = chunk.cy * SquelData.SIZE_IN_SQUELS * Mesher.SQUEL_SIZE_IN_METRES;
 
             e.addComponent(new MeshView(mesh));
             e.changedInWorld();
@@ -100,9 +100,9 @@ public class MeshingSystem extends AbstractTimedSystem {
     private static class MeshingUnit {
 
         final Chunk chunk;
-        final PixelData data;
+        final SquelData data;
 
-        private MeshingUnit(Chunk chunk, PixelData data) {
+        private MeshingUnit(Chunk chunk, SquelData data) {
             this.chunk = chunk;
             this.data = data;
         }
@@ -132,7 +132,7 @@ public class MeshingSystem extends AbstractTimedSystem {
             }
         }
 
-        private MeshBuilder process(PixelData data) {
+        private MeshBuilder process(SquelData data) {
             return mesher.mesh(data);
         }
     }

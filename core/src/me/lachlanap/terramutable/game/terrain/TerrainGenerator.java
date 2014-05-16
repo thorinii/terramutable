@@ -28,8 +28,8 @@ public class TerrainGenerator implements Generator {
     }
 
     @Override
-    public PixelData generate(int cx, int cy) {
-        PixelData data = new PixelData();
+    public SquelData generate(int cx, int cy) {
+        SquelData data = new SquelData();
 
         int bx = cx * data.getWidth();
         int by = cy * data.getHeight();

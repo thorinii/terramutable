@@ -6,32 +6,32 @@ import java.util.BitSet;
  *
  * @author Lachlan Phillips
  */
-public class PixelData {
+public class SquelData {
 
-    public static final int SIZE_IN_PIXELS = 16;
+    public static final int SIZE_IN_SQUELS = 16;
 
-    private final BitSet pixels;
+    private final BitSet squels;
     private boolean dirty;
 
-    public PixelData() {
-        pixels = new BitSet(SIZE_IN_PIXELS * SIZE_IN_PIXELS);
+    public SquelData() {
+        squels = new BitSet(SIZE_IN_SQUELS * SIZE_IN_SQUELS);
     }
 
     public int getWidth() {
-        return SIZE_IN_PIXELS;
+        return SIZE_IN_SQUELS;
     }
 
     public int getHeight() {
-        return SIZE_IN_PIXELS;
+        return SIZE_IN_SQUELS;
     }
 
     public void set(int x, int y, boolean solid) {
-        pixels.set(indexOf(x, y), solid);
+        squels.set(indexOf(x, y), solid);
         dirty = true;
     }
 
     public boolean get(int x, int y) {
-        return pixels.get(indexOf(x, y));
+        return squels.get(indexOf(x, y));
     }
 
     private int indexOf(int x, int y) {

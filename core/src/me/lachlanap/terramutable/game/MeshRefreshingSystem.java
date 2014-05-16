@@ -5,7 +5,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
-import me.lachlanap.terramutable.game.terrain.PixelData;
+import me.lachlanap.terramutable.game.terrain.SquelData;
 
 /**
  *
@@ -22,7 +22,7 @@ public class MeshRefreshingSystem extends AbstractTimedSystem {
 
     @Override
     protected void process(Entity e) {
-        PixelData data = cdm.get(e).pixelData;
+        SquelData data = cdm.get(e).pixelData;
 
         if (data.isDirty()) {
             e.removeComponent(MeshView.class);

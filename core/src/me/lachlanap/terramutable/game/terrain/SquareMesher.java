@@ -21,7 +21,7 @@ public class SquareMesher implements Mesher {
     }
 
     @Override
-    public MeshBuilder mesh(PixelData data) {
+    public MeshBuilder mesh(SquelData data) {
         VertexInfo i00 = new VertexInfo(),
                 i01 = new VertexInfo(),
                 i10 = new VertexInfo(),
@@ -34,7 +34,7 @@ public class SquareMesher implements Mesher {
 
         MeshBuilder builder = new MeshBuilder();
         builder.begin(new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Color()), GL20.GL_TRIANGLES);
-        builder.ensureVertices(4 * PixelData.SIZE_IN_PIXELS * PixelData.SIZE_IN_PIXELS);
+        builder.ensureVertices(4 * SquelData.SIZE_IN_SQUELS * SquelData.SIZE_IN_SQUELS);
 
         for (int x = 0; x < data.getWidth(); x++) {
             for (int y = 0; y < data.getHeight(); y++) {
@@ -42,14 +42,14 @@ public class SquareMesher implements Mesher {
                     continue;
                 }
 
-                i00.setPos((x) * Mesher.PIXEL_SIZE_IN_METRES,
-                           (y) * Mesher.PIXEL_SIZE_IN_METRES, 0);
-                i10.setPos((x + 1) * Mesher.PIXEL_SIZE_IN_METRES,
-                           (y) * Mesher.PIXEL_SIZE_IN_METRES, 0);
-                i11.setPos((x + 1) * Mesher.PIXEL_SIZE_IN_METRES,
-                           (y + 1) * Mesher.PIXEL_SIZE_IN_METRES, 0);
-                i01.setPos((x) * Mesher.PIXEL_SIZE_IN_METRES,
-                           (y + 1) * Mesher.PIXEL_SIZE_IN_METRES, 0);
+                i00.setPos((x) * Mesher.SQUEL_SIZE_IN_METRES,
+                           (y) * Mesher.SQUEL_SIZE_IN_METRES, 0);
+                i10.setPos((x + 1) * Mesher.SQUEL_SIZE_IN_METRES,
+                           (y) * Mesher.SQUEL_SIZE_IN_METRES, 0);
+                i11.setPos((x + 1) * Mesher.SQUEL_SIZE_IN_METRES,
+                           (y + 1) * Mesher.SQUEL_SIZE_IN_METRES, 0);
+                i01.setPos((x) * Mesher.SQUEL_SIZE_IN_METRES,
+                           (y + 1) * Mesher.SQUEL_SIZE_IN_METRES, 0);
 
                 builder.rect(i00, i10, i11, i01);
             }

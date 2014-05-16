@@ -1,6 +1,6 @@
 package me.lachlanap.terramutable.game;
 
-import me.lachlanap.terramutable.game.terrain.PixelData;
+import me.lachlanap.terramutable.game.terrain.SquelData;
 import com.artemis.Component;
 
 /**
@@ -9,13 +9,13 @@ import com.artemis.Component;
  */
 public class ChunkData extends Component {
 
-    public final PixelData pixelData;
+    public final SquelData pixelData;
 
-    public ChunkData(PixelData pixelData) {
+    public ChunkData(SquelData pixelData) {
         this.pixelData = pixelData;
     }
 
     public ChunkData() {
-        this(new PixelData());
+        this(new SquelData());
     }
 }

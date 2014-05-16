@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
  */
 public interface Mesher {
 
-    public static final float PIXEL_SIZE_IN_METRES = 0.1f;
-    public static final float CHUNK_SIZE_IN_METRES = PIXEL_SIZE_IN_METRES * PixelData.SIZE_IN_PIXELS;
+    public static final float SQUEL_SIZE_IN_METRES = 0.1f;
+    public static final float CHUNK_SIZE_IN_METRES = SQUEL_SIZE_IN_METRES * SquelData.SIZE_IN_SQUELS;
 
-    public MeshBuilder mesh(PixelData data);
+    public MeshBuilder mesh(SquelData data);
 
 }

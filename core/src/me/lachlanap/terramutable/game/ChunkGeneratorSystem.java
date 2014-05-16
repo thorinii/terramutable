@@ -6,7 +6,7 @@ import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
 import me.lachlanap.terramutable.game.terrain.Generator;
-import me.lachlanap.terramutable.game.terrain.PixelData;
+import me.lachlanap.terramutable.game.terrain.SquelData;
 
 /**
  *
@@ -29,7 +29,7 @@ public class ChunkGeneratorSystem extends AbstractTimedSystem {
     protected void process(Entity e) {
         Chunk chunk = cm.get(e);
 
-        PixelData data = generator.generate(chunk.cx, chunk.cy);
+        SquelData data = generator.generate(chunk.cx, chunk.cy);
 
         e.addComponent(new ChunkData(data));
         e.changedInWorld();
