@@ -1,20 +1,19 @@
 package me.lachlanap.terramutable.game;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
+import com.artemis.*;
 import com.artemis.annotations.Mapper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import me.lachlanap.terramutable.game.bus.Message;
-import me.lachlanap.terramutable.game.bus.MessageBus;
-import me.lachlanap.terramutable.game.bus.MessageBusListener;
+import me.lachlanap.terramutable.game.bus.*;
 import me.lachlanap.terramutable.game.messages.MoveCameraMessage;
+import me.lachlanap.terramutable.game.physics.PhysicsEngine;
+import me.lachlanap.terramutable.game.physics.PhysicsEngine.Buffer;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
 
 /**
@@ -35,7 +34,12 @@ public class RenderingSystem extends AbstractTimedSystem {
 
     private final ShaderProgram shader;
 
-    public RenderingSystem(StatsCollector collector) {
+    private final ShapeRenderer debugRenderer;
+    private final PhysicsEngine physicsEngine;
+
+    private boolean debug = true;
+
+    public RenderingSystem(StatsCollector collector, PhysicsEngine physicsEngine) {
         super(collector, Aspect.getAspectForAll(Position.class).one(MeshView.class));
 
         int width = Gdx.graphics.getWidth();
@@ -48,6 +52,9 @@ public class RenderingSystem extends AbstractTimedSystem {
         shader = new ShaderProgram(Gdx.files.local("shader/base.vert"), Gdx.files.local("shader/base.frag"));
         if (!shader.isCompiled())
             throw new IllegalStateException("Failed to compile shader: " + shader.getLog());
+
+        debugRenderer = new ShapeRenderer();
+        this.physicsEngine = physicsEngine;
     }
 
     public void resize(int width, int height) {
@@ -101,6 +108,8 @@ public class RenderingSystem extends AbstractTimedSystem {
 
         viewport.update();
 
+        debugRenderer.setProjectionMatrix(camera.combined);
+
         shader.begin();
         shader.setUniformMatrix("u_worldView", camera.combined);
     }
@@ -121,5 +130,20 @@ public class RenderingSystem extends AbstractTimedSystem {
     protected void end() {
         super.end();
         shader.end();
+
+        if (debug) {
+            Buffer buffer = physicsEngine.getCurrentBuffer();
+
+            debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            for (int i = 0; i < buffer.getPSize(); i++) {
+                if (buffer.pbodyId[i] != -1) {
+                    float x, y;
+                    x = buffer.ppos[i * 2];
+                    y = buffer.ppos[i * 2 + 1];
+                    debugRenderer.circle(x, y, buffer.prad[i], 3);
+                }
+            }
+            debugRenderer.end();
+        }
     }
 }

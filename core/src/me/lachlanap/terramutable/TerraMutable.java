@@ -9,6 +9,7 @@ import me.lachlanap.terramutable.game.*;
 import me.lachlanap.terramutable.game.bus.MessageBus;
 import me.lachlanap.terramutable.game.messages.DebugCycleStatsMessage;
 import me.lachlanap.terramutable.game.messages.MoveCameraMessage;
+import me.lachlanap.terramutable.game.physics.PhysicsEngine;
 import me.lachlanap.terramutable.game.stat.*;
 import me.lachlanap.terramutable.game.terrain.SquareMesher;
 import me.lachlanap.terramutable.game.terrain.TerrainGenerator;
@@ -28,41 +29,52 @@ public class TerraMutable extends ApplicationAdapter {
 
     @Override
     public void create() {
-        statsCollector = new StatsCollector();
-        assetManager = new AssetManager();
+        try {
+            statsCollector = new StatsCollector();
+            assetManager = new AssetManager();
 
-        world = new World();
-        messageBus = new MessageBus();
+            world = new World();
+            messageBus = new MessageBus();
 
-        renderingSystem = new RenderingSystem(statsCollector);
-        ChunkPagingSystem chunkPagingSystem = new ChunkPagingSystem(statsCollector, renderingSystem);
-        MeshRefreshingSystem meshRefreshingSystem = new MeshRefreshingSystem(statsCollector);
-        ChunkGeneratorSystem chunkGeneratorSystem = new ChunkGeneratorSystem(statsCollector, new TerrainGenerator());
-        MeshingSystem meshingSystem = new MeshingSystem(statsCollector, new SquareMesher());
+            PhysicsEngine engine = new PhysicsEngine();
 
-        world.setSystem(chunkPagingSystem);
-        world.setSystem(meshRefreshingSystem);
-        //world.setSystem(new PixelDataUpdateSystem());
-        world.setSystem(chunkGeneratorSystem);
-        world.setSystem(meshingSystem);
-        world.setSystem(renderingSystem);
+            renderingSystem = new RenderingSystem(statsCollector, engine);
+            ChunkPagingSystem chunkPagingSystem = new ChunkPagingSystem(statsCollector, renderingSystem);
+            MeshRefreshingSystem meshRefreshingSystem = new MeshRefreshingSystem(statsCollector);
+            ChunkGeneratorSystem chunkGeneratorSystem = new ChunkGeneratorSystem(statsCollector, new TerrainGenerator());
+            MeshingSystem meshingSystem = new MeshingSystem(statsCollector, new SquareMesher());
+            PhysicsMeshingSystem physicsMeshingSystem = new PhysicsMeshingSystem(statsCollector);
+            PhysicsSystem physicsSystem = new PhysicsSystem(statsCollector, engine);
 
-        world.initialize();
+            world.setSystem(chunkPagingSystem);
+            world.setSystem(meshRefreshingSystem);
+            //world.setSystem(new PixelDataUpdateSystem());
+            world.setSystem(chunkGeneratorSystem);
+            world.setSystem(meshingSystem);
+            world.setSystem(physicsMeshingSystem);
+            world.setSystem(physicsSystem);
+            world.setSystem(renderingSystem);
 
-        Gdx.input.setInputProcessor(new KeyboardProcessor());
+            world.initialize();
 
-        EntityFactory.makeEntityA(world, 0, 0).addToWorld();
+            Gdx.input.setInputProcessor(new KeyboardProcessor());
 
-        LCTManager lctManager = new LCTManager();
-        lctManager.register(TerrainGenerator.class);
-        LCTFrame lctFrame = new LCTFrame(lctManager);
-        lctFrame.setVisible(true);
+            EntityFactory.makeEntityA(world, 0, 0).addToWorld();
 
-        generalStatGatherer = new GeneralStatGatherer(statsCollector, messageBus);
-        setupDebugStats();
+            LCTManager lctManager = new LCTManager();
+            lctManager.register(TerrainGenerator.class);
+            LCTFrame lctFrame = new LCTFrame(lctManager);
+            lctFrame.setVisible(true);
 
-        renderingSystem.attachToBus(messageBus);
-        statsRenderer.attachToBus(messageBus);
+            generalStatGatherer = new GeneralStatGatherer(statsCollector, messageBus);
+            setupDebugStats();
+
+            renderingSystem.attachToBus(messageBus);
+            statsRenderer.attachToBus(messageBus);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Gdx.app.exit();
+        }
     }
 
     private void setupDebugStats() {

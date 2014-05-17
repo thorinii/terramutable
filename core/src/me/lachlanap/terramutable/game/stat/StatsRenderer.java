@@ -25,11 +25,8 @@ import me.lachlanap.terramutable.game.messages.DebugCycleStatsMessage;
  */
 public class StatsRenderer {
 
-    private static final Color[] colours;
-
-    static {
-        int number = 6;
-        colours = new Color[number];
+    private static Color[] makeColours(int number) {
+        Color[] colours = new Color[number];
         for (int i = 0; i < number; i++) {
             float hue = i / ((float) number + 0.99f);
             float saturation = 1;
@@ -67,6 +64,7 @@ public class StatsRenderer {
             }
             colours[i] = colour;
         }
+        return colours;
     }
 
     private final StatsCollector collector;
@@ -130,7 +128,7 @@ public class StatsRenderer {
         for (int i = 0; i < stats.length; i++) {
             String stat = stats[i];
             PlotRenderer renderer = new PlotRenderer(collector.get(stat),
-                                                     colours[i], min, max);
+                                                     makeColours(stats.length)[i], min, max);
             if (stats.length > 1)
                 renderer.setRenderMinMax(false);
             plotRenderers.add(renderer);
@@ -146,7 +144,7 @@ public class StatsRenderer {
         List<PlotRenderer> plotRenderers = new ArrayList<>();
         for (int i = 0; i < buffers.size(); i++) {
             StatBuffer buffer = buffers.get(i);
-            PlotRenderer renderer = new PlotRenderer(buffer, colours[i], min,
+            PlotRenderer renderer = new PlotRenderer(buffer, makeColours(buffers.size())[i], min,
                                                      max);
             renderer.setRenderMinMax(false);
             plotRenderers.add(renderer);
@@ -161,7 +159,7 @@ public class StatsRenderer {
         List<PlotRenderer> plotRenderers = new ArrayList<>();
         for (int i = 0; i < buffers.size(); i++) {
             StatBuffer buffer = buffers.get(i);
-            PlotRenderer renderer = new PlotRenderer(buffer, colours[i], 0, 0);
+            PlotRenderer renderer = new PlotRenderer(buffer, makeColours(buffers.size())[i], 0, 0);
             renderer.setRenderMinMax(false);
             plotRenderers.add(renderer);
         }
@@ -202,7 +200,7 @@ public class StatsRenderer {
                 batch.begin();
                 textRenderer.render(batch, renderer.getName() + ": " + formatter
                                     .format(renderer.getCurrent()),
-                                    5, height - 20 - 15 * i, colours[i]);
+                                    5, height - 20 - 15 * i, makeColours(renderers.size())[i]);
                 batch.end();
 
                 renderer.render(shapeRenderer, width, height);
