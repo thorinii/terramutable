@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.lachlanap.terramutable.game.bus.*;
 import me.lachlanap.terramutable.game.messages.MoveCameraMessage;
+import me.lachlanap.terramutable.game.physics.BodyMesh;
 import me.lachlanap.terramutable.game.physics.PhysicsEngine;
 import me.lachlanap.terramutable.game.physics.PhysicsEngine.Buffer;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
@@ -118,7 +119,7 @@ public class RenderingSystem extends AbstractTimedSystem {
     protected void process(Entity e) {
         Position position = pm.get(e);
 
-        Matrix4 model = new Matrix4().translate(position.x, position.y, 0);
+        Matrix4 model = new Matrix4().translate(position.x, position.y, 0).rotateRad(0, 0, 1, position.angle);
 
         shader.setUniformMatrix("u_model", model);
 
@@ -140,7 +141,7 @@ public class RenderingSystem extends AbstractTimedSystem {
                     float x, y;
                     x = buffer.ppos[i * 2];
                     y = buffer.ppos[i * 2 + 1];
-                    debugRenderer.circle(x, y, buffer.prad[i], 3);
+                    debugRenderer.circle(x, y, BodyMesh.PARTICLE_RADIUS / 2, 3);
                 }
             }
             debugRenderer.end();

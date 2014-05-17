@@ -8,7 +8,7 @@ import com.artemis.Component;
  */
 public class Position extends Component {
 
-    public float x, y;
+    public float x, y, angle;
 
     public Position() {
         this(0, 0);

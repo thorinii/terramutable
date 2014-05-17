@@ -13,15 +13,17 @@ import me.lachlanap.terramutable.game.terrain.SquelData;
  */
 public class BodyMesh {
 
-    public static BodyMesh makeTriangle(int w, int h, float particleRadius) {
-        int fitX = (int) Math.ceil(w / (particleRadius));
-        int fitY = (int) Math.ceil(h / (particleRadius));
+    public static final float PARTICLE_RADIUS = 0.1f;
+
+    public static BodyMesh makeTriangle(int w, int h) {
+        int fitX = (int) Math.ceil(w / (PARTICLE_RADIUS));
+        int fitY = (int) Math.ceil(h / (PARTICLE_RADIUS));
 
         BodyMesh mesh = new BodyMesh(fitX, fitY);
 
         for (int x = 0; x < fitX; x++) {
             for (int y = 0; y < fitY; y++) {
-                mesh.data[y * fitY + x] = true;//(x + y <= fitX);
+                mesh.data[y * fitY + x] = (x + y <= fitX);
             }
         }
 

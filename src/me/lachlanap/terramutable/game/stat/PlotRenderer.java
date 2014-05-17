@@ -16,7 +16,7 @@ public class PlotRenderer {
 
     private final StatBuffer stat;
     private final Color colour;
-    private final float lowerBound, upperBound;
+    private float lowerBound, upperBound;
     private final float[] buffer;
     private boolean renderMinMax;
 
@@ -40,8 +40,24 @@ public class PlotRenderer {
         return stat.getLatest();
     }
 
+    public float getMin() {
+        return stat.getMin();
+    }
+
+    public float getMax() {
+        return stat.getMax();
+    }
+
     public void setRenderMinMax(boolean renderMinMax) {
         this.renderMinMax = renderMinMax;
+    }
+
+    public void setLowerBound(float lowerBound) {
+        this.lowerBound = lowerBound;
+    }
+
+    public void setUpperBound(float upperBound) {
+        this.upperBound = upperBound;
     }
 
     public void render(ShapeRenderer shapeRenderer, int width, int height) {

@@ -60,8 +60,11 @@ public class PhysicsSystem extends AbstractTimedSystem {
 
         if (!body.fixed) {
             Vector2 position = engine.getPositionOf(body.bodyId);
+            float rotation = engine.getRotationOf(body.bodyId);
+
             pos.x = position.x;
             pos.y = position.y;
+            pos.angle = rotation;
         }
     }
 }

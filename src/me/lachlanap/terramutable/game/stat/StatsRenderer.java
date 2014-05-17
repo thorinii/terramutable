@@ -135,7 +135,7 @@ public class StatsRenderer {
         }
 
         renderers.add(new AggregatePlotRenderer(textRenderer, plotName,
-                                                plotRenderers));
+                                                plotRenderers, min == max));
     }
 
     public void makeParentPlot(String plotName, float min, float max,
@@ -151,7 +151,7 @@ public class StatsRenderer {
         }
 
         renderers.add(new AggregatePlotRenderer(textRenderer, plotName,
-                                                plotRenderers));
+                                                plotRenderers, min == max));
     }
 
     public void makeParentPlot(String plotName, String parentName) {
@@ -165,7 +165,7 @@ public class StatsRenderer {
         }
 
         renderers.add(new AggregatePlotRenderer(textRenderer, plotName,
-                                                plotRenderers));
+                                                plotRenderers, true));
     }
 
     private static class AggregatePlotRenderer {
@@ -174,12 +174,15 @@ public class StatsRenderer {
         final String plotName;
         final List<PlotRenderer> renderers;
         final NumberFormat formatter;
+        final boolean autoResize;
 
         public AggregatePlotRenderer(TextRenderer textRenderer, String plotName,
-                                     List<PlotRenderer> renderers) {
+                                     List<PlotRenderer> renderers,
+                                     boolean autoResize) {
             this.textRenderer = textRenderer;
             this.plotName = plotName;
             this.renderers = renderers;
+            this.autoResize = autoResize;
 
             formatter = NumberFormat.getIntegerInstance();
             formatter.setMaximumFractionDigits(3);
@@ -192,6 +195,15 @@ public class StatsRenderer {
             textRenderer.render(batch, plotName, 5, height - 5);
             batch.end();
 
+            float min = Float.MAX_VALUE, max = Float.MIN_VALUE;
+            for (PlotRenderer renderer : renderers) {
+                if (min > renderer.getMin())
+                    min = renderer.getMin();
+                if (max < renderer.getMax())
+                    max = renderer.getMax();
+            }
+            float range = max - min;
+
             float total = 0;
             for (int i = 0; i < renderers.size(); i++) {
                 PlotRenderer renderer = renderers.get(i);
@@ -202,6 +214,11 @@ public class StatsRenderer {
                                     .format(renderer.getCurrent()),
                                     5, height - 20 - 15 * i, makeColours(renderers.size())[i]);
                 batch.end();
+
+                if (autoResize) {
+                    renderer.setLowerBound(min - range * 0.01f);
+                    renderer.setUpperBound(max + range * 0.1f);
+                }
 
                 renderer.render(shapeRenderer, width, height);
             }

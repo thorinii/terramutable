@@ -81,8 +81,8 @@ public class TerraMutable extends ApplicationAdapter {
         statsRenderer = new StatsRenderer(statsCollector);
 
         statsRenderer.makePlot("FPS", 0, 100, "fps");
-        statsRenderer.makeParentPlot("Memory Usage", 0, 1000, "memory");
-        statsRenderer.makeParentPlot("Systems", 0, 0.05f, "system");
+        statsRenderer.makeParentPlot("Memory Usage", "memory");
+        statsRenderer.makeParentPlot("Systems", "system");
         statsRenderer.makeParentPlot("Entities", "entity");
         statsRenderer.makeParentPlot("Message Bus", "bus");
     }

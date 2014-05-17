@@ -41,6 +41,6 @@ public class EntityFactory {
     }
 
     private static BodyMesh buildAPhysicsMesh() {
-        return BodyMesh.makeTriangle(2, 2, 0.1f);
+        return BodyMesh.makeTriangle(2, 2);
     }
 }
