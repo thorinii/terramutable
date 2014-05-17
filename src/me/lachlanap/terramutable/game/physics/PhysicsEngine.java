@@ -126,6 +126,9 @@ public class PhysicsEngine {
 
             current.bimp[bid * 2] += current.pimp[i * 2];
             current.bimp[bid * 2 + 1] += current.pimp[i * 2 + 1];
+
+            current.pimp[i * 2] = 0;
+            current.pimp[i * 2 + 1] = 0;
         }
 
         for (int i = 0; i < current.bsize; i++) {
