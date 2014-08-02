@@ -1,4 +1,4 @@
-package me.lachlanap.terramutable.game;
+package me.lachlanap.terramutable.game.component;
 
 import com.artemis.Component;
 import com.badlogic.gdx.graphics.Mesh;

@@ -13,7 +13,7 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import me.lachlanap.terramutable.game.TextRenderer;
+import me.lachlanap.terramutable.game.system.TextRenderer;
 import me.lachlanap.terramutable.game.bus.Message;
 import me.lachlanap.terramutable.game.bus.MessageBus;
 import me.lachlanap.terramutable.game.bus.MessageBusListener;

@@ -1,5 +1,6 @@
-package me.lachlanap.terramutable.game;
+package me.lachlanap.terramutable.game.system;
 
+import me.lachlanap.terramutable.game.component.Position;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;

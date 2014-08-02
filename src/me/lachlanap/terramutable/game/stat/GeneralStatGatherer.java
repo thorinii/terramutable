@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package me.lachlanap.terramutable.game;
+package me.lachlanap.terramutable.game.stat;
 
 import com.artemis.World;
 import me.lachlanap.terramutable.game.bus.MessageBus;

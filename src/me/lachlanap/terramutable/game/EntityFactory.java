@@ -5,6 +5,7 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
+import me.lachlanap.terramutable.game.component.*;
 
 /**
  *
@@ -12,29 +13,19 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class EntityFactory {
 
-    public static Entity makeEntityA(World world, float x, float y) {
-        Entity e = world.createEntity();
-
-        e.addComponent(new Position(x, y));
-        e.addComponent(new MeshView(buildAMesh()));
-
-        return e;
-    }
-
-    public static Entity makeChunk(World world, int chunkX, int chunkY) {
-        Entity e = world.createEntity();
-
-        e.addComponent(new Chunk(chunkX, chunkY));
-
-        return e;
+    public static Entity makePlayer(World world, float x, float y) {
+        return world.createEntity()
+                .addComponent(new Position(x, y))
+                .addComponent(new MeshView(buildAMesh()))
+                .addComponent(new InputStatus());
     }
 
     private static Mesh buildAMesh() {
         MeshBuilder builder = new MeshBuilder();
-        builder.begin(new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Color()), GL20.GL_TRIANGLES);
-        builder.triangle(new Vector3(0, 0, 0), Color.RED,
-                         new Vector3(2, 0, 0), Color.GREEN,
-                         new Vector3(0, 2, 0), Color.BLUE);
+        builder.begin(new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal()), GL20.GL_TRIANGLES);
+        builder.rect(new Vector3(-.5f, -.5f, 0), new Vector3(-.5f, .5f, 0),
+                     new Vector3(.5f, .5f, 0), new Vector3(.5f, -.5f, 0),
+                     new Vector3(0, 0, 1));
         return builder.end();
     }
 }

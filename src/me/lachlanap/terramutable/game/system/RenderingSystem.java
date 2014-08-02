@@ -1,5 +1,7 @@
-package me.lachlanap.terramutable.game;
+package me.lachlanap.terramutable.game.system;
 
+import me.lachlanap.terramutable.game.component.MeshView;
+import me.lachlanap.terramutable.game.component.Position;
 import com.artemis.*;
 import com.artemis.annotations.Mapper;
 import com.badlogic.gdx.Gdx;
