@@ -9,10 +9,7 @@ import me.lachlanap.terramutable.game.*;
 import me.lachlanap.terramutable.game.bus.MessageBus;
 import me.lachlanap.terramutable.game.messages.DebugCycleStatsMessage;
 import me.lachlanap.terramutable.game.messages.MoveCameraMessage;
-import me.lachlanap.terramutable.game.physics.PhysicsEngine;
 import me.lachlanap.terramutable.game.stat.*;
-import me.lachlanap.terramutable.game.terrain.SquareMesher;
-import me.lachlanap.terramutable.game.terrain.TerrainGenerator;
 
 public class TerraMutable extends ApplicationAdapter {
 
@@ -36,23 +33,7 @@ public class TerraMutable extends ApplicationAdapter {
             world = new World();
             messageBus = new MessageBus();
 
-            PhysicsEngine engine = new PhysicsEngine();
-
-            renderingSystem = new RenderingSystem(statsCollector, engine);
-            ChunkPagingSystem chunkPagingSystem = new ChunkPagingSystem(statsCollector, renderingSystem);
-            MeshRefreshingSystem meshRefreshingSystem = new MeshRefreshingSystem(statsCollector);
-            ChunkGeneratorSystem chunkGeneratorSystem = new ChunkGeneratorSystem(statsCollector, new TerrainGenerator());
-            MeshingSystem meshingSystem = new MeshingSystem(statsCollector, new SquareMesher());
-            PhysicsMeshingSystem physicsMeshingSystem = new PhysicsMeshingSystem(statsCollector);
-            PhysicsSystem physicsSystem = new PhysicsSystem(statsCollector, engine);
-
-            world.setSystem(chunkPagingSystem);
-            world.setSystem(meshRefreshingSystem);
-            //world.setSystem(new PixelDataUpdateSystem());
-            world.setSystem(chunkGeneratorSystem);
-            world.setSystem(meshingSystem);
-            world.setSystem(physicsMeshingSystem);
-            world.setSystem(physicsSystem);
+            renderingSystem = new RenderingSystem(statsCollector);
             world.setSystem(renderingSystem);
 
             world.initialize();
@@ -62,7 +43,6 @@ public class TerraMutable extends ApplicationAdapter {
             EntityFactory.makeEntityA(world, 0, 0).addToWorld();
 
             LCTManager lctManager = new LCTManager();
-            lctManager.register(TerrainGenerator.class);
             LCTFrame lctFrame = new LCTFrame(lctManager);
             lctFrame.setVisible(true);
 

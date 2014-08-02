@@ -5,7 +5,6 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
-import me.lachlanap.terramutable.game.physics.BodyMesh;
 
 /**
  *
@@ -18,7 +17,6 @@ public class EntityFactory {
 
         e.addComponent(new Position(x, y));
         e.addComponent(new MeshView(buildAMesh()));
-        e.addComponent(new PhysicsBody(buildAPhysicsMesh(), false));
 
         return e;
     }
@@ -38,9 +36,5 @@ public class EntityFactory {
                          new Vector3(2, 0, 0), Color.GREEN,
                          new Vector3(0, 2, 0), Color.BLUE);
         return builder.end();
-    }
-
-    private static BodyMesh buildAPhysicsMesh() {
-        return BodyMesh.makeTriangle(2, 2);
     }
 }

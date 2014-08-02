@@ -3,7 +3,6 @@ package me.lachlanap.terramutable.game;
 import com.artemis.*;
 import com.artemis.annotations.Mapper;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -13,9 +12,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import me.lachlanap.terramutable.game.bus.*;
 import me.lachlanap.terramutable.game.messages.MoveCameraMessage;
-import me.lachlanap.terramutable.game.physics.BodyMesh;
-import me.lachlanap.terramutable.game.physics.PhysicsEngine;
-import me.lachlanap.terramutable.game.physics.PhysicsEngine.Buffer;
 import me.lachlanap.terramutable.game.stat.StatsCollector;
 
 /**
@@ -37,11 +33,10 @@ public class RenderingSystem extends AbstractTimedSystem {
     private final ShaderProgram shader;
 
     private final ShapeRenderer debugRenderer;
-    private final PhysicsEngine physicsEngine;
 
     private boolean debug = true;
 
-    public RenderingSystem(StatsCollector collector, PhysicsEngine physicsEngine) {
+    public RenderingSystem(StatsCollector collector) {
         super(collector, Aspect.getAspectForAll(Position.class).one(MeshView.class));
 
         int width = Gdx.graphics.getWidth();
@@ -56,7 +51,6 @@ public class RenderingSystem extends AbstractTimedSystem {
             throw new IllegalStateException("Failed to compile shader: " + shader.getLog());
 
         debugRenderer = new ShapeRenderer();
-        this.physicsEngine = physicsEngine;
     }
 
     public void resize(int width, int height) {
@@ -134,25 +128,6 @@ public class RenderingSystem extends AbstractTimedSystem {
         shader.end();
 
         if (debug) {
-            Buffer buffer = physicsEngine.getCurrentBuffer();
-
-            debugRenderer.setColor(Color.BLUE);
-            debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            for (int i = 0; i < buffer.getPSize(); i++) {
-                if (buffer.pbodyId[i] != -1) {
-                    float x, y;
-                    x = buffer.ppos[i * 2];
-                    y = buffer.ppos[i * 2 + 1];
-                    debugRenderer.circle(x, y, BodyMesh.PARTICLE_RADIUS / 2, 3);
-                }
-            }
-            debugRenderer.end();
-
-            debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-            Rectangle worldSize = physicsEngine.getWorldSize();
-            debugRenderer.setColor(Color.YELLOW);
-            debugRenderer.rect(worldSize.x, worldSize.y, worldSize.width, worldSize.height);
-            debugRenderer.end();
         }
     }
 }
