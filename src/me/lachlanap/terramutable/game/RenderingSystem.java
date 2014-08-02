@@ -3,6 +3,7 @@ package me.lachlanap.terramutable.game;
 import com.artemis.*;
 import com.artemis.annotations.Mapper;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -135,6 +136,7 @@ public class RenderingSystem extends AbstractTimedSystem {
         if (debug) {
             Buffer buffer = physicsEngine.getCurrentBuffer();
 
+            debugRenderer.setColor(Color.BLUE);
             debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
             for (int i = 0; i < buffer.getPSize(); i++) {
                 if (buffer.pbodyId[i] != -1) {
@@ -144,6 +146,12 @@ public class RenderingSystem extends AbstractTimedSystem {
                     debugRenderer.circle(x, y, BodyMesh.PARTICLE_RADIUS / 2, 3);
                 }
             }
+            debugRenderer.end();
+
+            debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+            Rectangle worldSize = physicsEngine.getWorldSize();
+            debugRenderer.setColor(Color.YELLOW);
+            debugRenderer.rect(worldSize.x, worldSize.y, worldSize.width, worldSize.height);
             debugRenderer.end();
         }
     }

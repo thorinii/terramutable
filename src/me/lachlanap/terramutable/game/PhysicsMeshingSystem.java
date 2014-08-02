@@ -27,7 +27,7 @@ public class PhysicsMeshingSystem extends AbstractTimedSystem {
     protected void process(Entity e) {
         Chunk chunk = cm.get(e);
 
-        if (chunk.cy == -1) {
+        if (chunk.cy == -1 && chunk.cx <= 0) {
             SquelData data = cdm.get(e).pixelData;
 
             BodyMesh mesh = new BodyMesh(data);

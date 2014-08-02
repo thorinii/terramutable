@@ -50,7 +50,8 @@ public class PhysicsSystem extends AbstractTimedSystem {
     @Override
     protected void begin() {
         super.begin();
-        engine.update(1 / 60f);
+        engine.update(1 / 120f);
+        //engine.update(1 / 120f);
     }
 
     @Override

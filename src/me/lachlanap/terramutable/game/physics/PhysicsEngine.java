@@ -21,15 +21,20 @@ public class PhysicsEngine {
 
     private int nextBodyId, nextParticleId;
 
-    private final Rectangle worldSize = new Rectangle();
+    private final Rectangle worldSize = new Rectangle(-1000, -1000, 1000, 1000);
+    private final QuadTree quadTree = new QuadTree();
 
     public PhysicsEngine() {
-        this.bsize = 32;
-        this.psize = 4 * 1024;
+        this.bsize = 1024;
+        this.psize = 32 * 1024;
 
         this.current = new Buffer(bsize, psize);
 
         Arrays.fill(current.pbodyId, -1);
+    }
+
+    public Rectangle getWorldSize() {
+        return worldSize;
     }
 
     public int addBody(BodyMesh mesh, float x, float y, boolean fixed) {
@@ -97,6 +102,8 @@ public class PhysicsEngine {
     }
 
     private void initialiseParticles() {
+        quadTree.reset(worldSize);
+
         Arrays.fill(current.bmass, 0);
 
         for (int i = 0; i < current.psize; i++) {
@@ -119,14 +126,24 @@ public class PhysicsEngine {
             current.ppos[i * 2 + 1] = rotY + current.bpos[bid * 2 + 1];
 
             current.bmass[bid] += current.pmass[i];
+
+            quadTree.insert(i, current.ppos[i * 2], current.ppos[i * 2 + 1]);
         }
     }
 
     private void collideParticles(float dt) {
+        int[] tmp = new int[128];
+
         for (int i = 0; i < current.psize; i++) {
             if (current.pbodyId[i] == -1)
                 continue;
-            for (int j = 0; j < current.psize; j++) {
+
+            int count = quadTree.query(current.ppos[i * 2], current.ppos[i * 2 + 1],
+                                       BodyMesh.PARTICLE_RADIUS * 2 + 0.5f,
+                                       tmp);
+
+            for (int jIndex = 0; jIndex < count; jIndex++) {
+                int j = tmp[jIndex];
                 if (i == j)
                     continue;
                 if (current.pbodyId[j] == -1)
@@ -148,14 +165,37 @@ public class PhysicsEngine {
                     current.pimp[i * 2 + 1] = forceY * dt;
                 }
             }
+            /*
+             for (int j = 0; j < current.psize; j++) {
+             if (i == j)
+             continue;
+             if (current.pbodyId[j] == -1)
+             continue;
+
+             // f = -k(d-|r|)(r/|r|)
+             // f = -spring(diameter - abs(dist[j,i]))(dist[j,i]/abs(dist[j,i]))
+             float distX = current.ppos[j * 2] - current.ppos[i * 2];
+             float distY = current.ppos[j * 2 + 1] - current.ppos[i * 2 + 1];
+             float dist = (float) Math.hypot(distX, distY);
+
+             float diameter = BodyMesh.PARTICLE_RADIUS * 2;
+
+             float forceX = -SPRING * (diameter - dist) * (distX / dist);
+             float forceY = -SPRING * (diameter - dist) * (distY / dist);
+
+             if (dist < diameter && current.pbodyId[i] != current.pbodyId[j]) {
+             current.pimp[i * 2] = forceX * dt;
+             current.pimp[i * 2 + 1] = forceY * dt;
+             }
+             }*/
         }
     }
 
     private void computeRigidBodies(float dt) {
-        worldSize.x = 0;
-        worldSize.y = 0;
-        worldSize.width = 0;
-        worldSize.height = 0;
+        worldSize.x = Float.MAX_VALUE;
+        worldSize.y = Float.MAX_VALUE;
+        worldSize.width = Float.MIN_VALUE;
+        worldSize.height = Float.MIN_VALUE;
 
         for (int i = 0; i < current.psize; i++) {
             int bid = current.pbodyId[i];
@@ -173,7 +213,19 @@ public class PhysicsEngine {
 
             current.pimp[i * 2] = 0;
             current.pimp[i * 2 + 1] = 0;
+
+            float px = current.ppos[i * 2];
+            float py = current.ppos[i * 2 + 1];
+            worldSize.x = Math.min(worldSize.x, px);
+            worldSize.y = Math.min(worldSize.y, py);
+            worldSize.width = Math.max(worldSize.width, px - worldSize.x);
+            worldSize.height = Math.max(worldSize.height, py - worldSize.y);
         }
+
+        worldSize.x -= worldSize.width * 100;
+        worldSize.y -= worldSize.height * 100;
+        worldSize.width *= 200;
+        worldSize.height *= 200;
 
         for (int i = 0; i < current.bsize; i++) {
             current.bimp[i * 2 + 1] = current.bimp[i * 2 + 1] - 9.81f * dt;
