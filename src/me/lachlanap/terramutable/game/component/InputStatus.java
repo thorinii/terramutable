@@ -9,6 +9,8 @@ public class InputStatus extends Component {
 
     public final Vector2 target = new Vector2();
 
+    public float reloadTimer;
+
     @Override
     public String toString() {
         return "[shooting: " + shooting + "; target: " + target + "]";

@@ -13,11 +13,11 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import me.lachlanap.terramutable.game.system.TextRenderer;
 import me.lachlanap.terramutable.game.bus.Message;
 import me.lachlanap.terramutable.game.bus.MessageBus;
 import me.lachlanap.terramutable.game.bus.MessageBusListener;
 import me.lachlanap.terramutable.game.messages.DebugCycleStatsMessage;
+import me.lachlanap.terramutable.game.system.TextRenderer;
 
 /**
  *
@@ -202,6 +202,8 @@ public class StatsRenderer {
                 if (max < renderer.getMax())
                     max = renderer.getMax();
             }
+            if (min > 0)
+                min = 0;
             float range = max - min;
 
             float total = 0;

@@ -10,8 +10,7 @@ import me.lachlanap.terramutable.game.bus.MessageBus;
 import me.lachlanap.terramutable.game.messages.DebugCycleStatsMessage;
 import me.lachlanap.terramutable.game.messages.MoveCameraMessage;
 import me.lachlanap.terramutable.game.stat.*;
-import me.lachlanap.terramutable.game.system.InputCollectingSystem;
-import me.lachlanap.terramutable.game.system.RenderingSystem;
+import me.lachlanap.terramutable.game.system.*;
 
 public class TerraMutable extends ApplicationAdapter {
 
@@ -38,6 +37,7 @@ public class TerraMutable extends ApplicationAdapter {
             renderingSystem = new RenderingSystem(statsCollector);
             world.setSystem(renderingSystem);
             world.setSystem(new InputCollectingSystem(Gdx.input, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+            world.setSystem(new InputHandlingSystem());
 
             world.initialize();
 
